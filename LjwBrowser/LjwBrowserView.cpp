@@ -7,6 +7,11 @@
 
 #include "LjwBrowserView.h"
 
+CLjwBrowserView::CLjwBrowserView(): m_eventHandler(NULL)
+{
+
+}
+
 BOOL CLjwBrowserView::PreTranslateMessage(MSG* pMsg)
 {
 	if((pMsg->message < WM_KEYFIRST || pMsg->message > WM_KEYLAST) &&
@@ -15,4 +20,11 @@ BOOL CLjwBrowserView::PreTranslateMessage(MSG* pMsg)
 
 	// give HTML page a chance to translate this message
 	return (BOOL)SendMessage(WM_FORWARDMSG, 0, (LPARAM)pMsg);
+}
+
+LRESULT CLjwBrowserView::onCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
+{
+
+	bHandled = FALSE;
+	return 0;
 }

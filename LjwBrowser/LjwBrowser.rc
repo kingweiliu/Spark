@@ -87,8 +87,6 @@ BEGIN
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
         MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
-        MENUITEM "New &Window",                 ID_FILE_NEW_WINDOW
-        MENUITEM SEPARATOR
         MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
         MENUITEM "Print Pre&view",              ID_FILE_PRINT_PREVIEW
         MENUITEM "P&rint Setup...",             ID_FILE_PRINT_SETUP
@@ -108,11 +106,24 @@ BEGIN
         MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
     END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&Close\tCtrl+F4",             ID_WINDOW_CLOSE
+        MENUITEM "Close &All",                  ID_WINDOW_CLOSE_ALL
+    END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About LjwBrowser",              ID_APP_ABOUT
+        MENUITEM "&About LjwBrowser",                 ID_APP_ABOUT
+    END
+    POPUP "&Proxy"
+    BEGIN
+        MENUITEM "No Proxy",                    ID_PROXY_NOPROXY
+        MENUITEM "IE Proxy",                    ID_PROXY_IEPROXY
+        MENUITEM "My Setting",                  ID_PROXY_MYSETTING
+        MENUITEM "No Proxy 2",                  ID_PROXY_NOPROXY2
     END
 END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -129,18 +140,15 @@ IDR_MAINFRAME           ICON                    "res\\LjwBrowser.ico"
 //
 
 IDD_ABOUTBOX DIALOG  0, 0, 187, 102
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About"
 FONT 8, "MS Shell Dlg"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,130,81,50,14
-    CTEXT           "LjwBrowser Application v1.0\n\n(c) Copyright 2014",IDC_STATIC,25,57,78,
-                    32
+    CTEXT           "LjwBrowser Application v1.0\n\n(c) Copyright 2013",IDC_STATIC,25,57,78,32
     ICON            IDR_MAINFRAME,IDC_STATIC,55,26,18,20
     GROUPBOX        "",IDC_STATIC,7,7,115,88
 END
-
-
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -208,21 +216,21 @@ BEGIN
     BEGIN
         BLOCK "040904B0"
         BEGIN
-            VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "LjwBrowser Module\0"
-            VALUE "FileVersion", "1, 0, 0, 1\0"
-            VALUE "InternalName", "LjwBrowser\0"
-            VALUE "LegalCopyright", "Copyright 2014\0"
-            VALUE "OriginalFilename", "LjwBrowser.exe\0"
-            VALUE "ProductName", "LjwBrowser Module\0"
-            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "FileDescription", "LjwBrowser Module"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "LjwBrowser"
+            VALUE "LegalCopyright", "Copyright 2013"
+            VALUE "OriginalFilename", "LjwBrowser.exe"
+            VALUE "ProductName", "LjwBrowser Module"
+            VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END
     BLOCK "VarFileInfo"
     BEGIN
-        VALUE "Translation", 0x0409, 0x04B0
+        VALUE "Translation", 0x409, 1200
     END
 END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -231,7 +239,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDR_MAINFRAME	"LjwBrowser"
+    IDR_MAINFRAME           "LjwBrowser"
 END
 
 STRINGTABLE 
@@ -311,17 +319,14 @@ END
 STRINGTABLE 
 BEGIN
     ATL_IDS_IDLEMESSAGE     "Ready"
-    ATL_IDS_MRU_FILE        "Open this document"
 END
 
 STRINGTABLE 
 BEGIN
-	ID_FILE_NEW_WINDOW  "Open a new window\nNew Window"
+    ATL_IDS_MRU_FILE        "Open this document"
 END
 
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef APSTUDIO_INVOKED
-#endif    // not APSTUDIO_INVOKED

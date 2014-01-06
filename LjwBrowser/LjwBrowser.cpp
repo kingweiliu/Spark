@@ -8,122 +8,100 @@
 #include "LjwBrowserView.h"
 #include "aboutdlg.h"
 #include "MainFrm.h"
+#include "../third_party/Detours3/src/detours.h"
+#include <WinInet.h>
+#include "Setting.h"
 
 CAppModule _Module;
 
-class CLjwBrowserThreadManager
+int Run(LPTSTR /*lpstrCmdLine*/ = NULL, int nCmdShow = SW_SHOWDEFAULT)
 {
-public:
-	// thread init param
-	struct _RunData
+	CMessageLoop theLoop;
+	_Module.AddMessageLoop(&theLoop);
+
+	CMainFrame wndMain;
+
+	if(wndMain.CreateEx() == NULL)
 	{
-		LPTSTR lpstrCmdLine;
-		int nCmdShow;
-	};
-
-	// thread proc
-	static DWORD WINAPI RunThread(LPVOID lpData)
-	{
-		CMessageLoop theLoop;
-		_Module.AddMessageLoop(&theLoop);
-
-		_RunData* pData = (_RunData*)lpData;
-		CMainFrame wndFrame;
-
-		if(wndFrame.CreateEx() == NULL)
-		{
-			ATLTRACE(_T("Frame window creation failed!\n"));
-			return 0;
-		}
-
-		wndFrame.ShowWindow(pData->nCmdShow);
-		::SetForegroundWindow(wndFrame);	// Win95 needs this
-		delete pData;
-
-		int nRet = theLoop.Run();
-
-		_Module.RemoveMessageLoop();
-		return nRet;
+		ATLTRACE(_T("Main window creation failed!\n"));
+		return 0;
 	}
 
-	DWORD m_dwCount;
-	HANDLE m_arrThreadHandles[MAXIMUM_WAIT_OBJECTS - 1];
+	wndMain.ShowWindow(nCmdShow);
 
-	CLjwBrowserThreadManager() : m_dwCount(0)
-	{ }
+	int nRet = theLoop.Run();
 
-// Operations
-	DWORD AddThread(LPTSTR lpstrCmdLine, int nCmdShow)
+	_Module.RemoveMessageLoop();
+	return nRet;
+}
+
+int (*nAdd)(int a, int b);
+
+
+typedef  HINTERNET (__stdcall *pInternetConnect)(
+						  HINTERNET hInternet,
+						  LPCTSTR lpszServerName,
+						  INTERNET_PORT nServerPort,
+						  LPCTSTR lpszUsername,
+						  LPCTSTR lpszPassword,
+						  DWORD dwService,
+						  DWORD dwFlags,
+						  DWORD_PTR dwContext
+						  );
+
+pInternetConnect g_originConnect = InternetConnectW;
+
+
+
+HINTERNET hook_InternetConnect(
+						  HINTERNET hInternet,
+						  LPCTSTR lpszServerName,
+						  INTERNET_PORT nServerPort,
+						  LPCTSTR lpszUsername,
+						  LPCTSTR lpszPassword,
+						  DWORD dwService,
+						  DWORD dwFlags,
+						  DWORD_PTR dwContext
+						  )
+{
+	if (Setting::m_bProxy)
 	{
-		if(m_dwCount == (MAXIMUM_WAIT_OBJECTS - 1))
-		{
-			::MessageBox(NULL, _T("ERROR: Cannot create ANY MORE threads!!!"), _T("LjwBrowser"), MB_OK);
-			return 0;
-		}
+		INTERNET_PER_CONN_OPTION_LIST    List;
+		INTERNET_PER_CONN_OPTION         Option[2];
+		unsigned long                    nSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
 
-		_RunData* pData = new _RunData;
-		pData->lpstrCmdLine = lpstrCmdLine;
-		pData->nCmdShow = nCmdShow;
-		DWORD dwThreadID;
-		HANDLE hThread = ::CreateThread(NULL, 0, RunThread, pData, 0, &dwThreadID);
-		if(hThread == NULL)
-		{
-			::MessageBox(NULL, _T("ERROR: Cannot create thread!!!"), _T("LjwBrowser"), MB_OK);
-			return 0;
-		}
 
-		m_arrThreadHandles[m_dwCount] = hThread;
-		m_dwCount++;
-		return dwThreadID;
+		Option[0].dwOption = INTERNET_PER_CONN_FLAGS;
+
+		Option[1].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
+
+		List.dwSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
+		List.pszConnection = NULL;
+		List.dwOptionCount = 2;
+		List.dwOptionError = 0;
+		List.pOptions = Option;
+
+		Option[1].Value.pszValue = L"172.19.1.2:9217";
+		Option[0].Value.dwValue = PROXY_TYPE_PROXY ;
+
+		BOOL bRet = InternetSetOption(hInternet, INTERNET_OPTION_PER_CONNECTION_OPTION, &List, nSize);
 	}
+	return g_originConnect(hInternet, lpszServerName, nServerPort, lpszUsername, lpszPassword, dwService, dwFlags, dwContext);
+}
 
-	void RemoveThread(DWORD dwIndex)
-	{
-		::CloseHandle(m_arrThreadHandles[dwIndex]);
-		if(dwIndex != (m_dwCount - 1))
-			m_arrThreadHandles[dwIndex] = m_arrThreadHandles[m_dwCount - 1];
-		m_dwCount--;
-	}
 
-	int Run(LPTSTR lpstrCmdLine, int nCmdShow)
-	{
-		MSG msg;
-		// force message queue to be created
-		::PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
 
-		AddThread(lpstrCmdLine, nCmdShow);
+void HookFunc()
+{
+	 DetourTransactionBegin();
+	 DetourUpdateThread(::GetCurrentThread());
+	 DetourAttach((PVOID*)&g_originConnect, hook_InternetConnect);
+	 DetourTransactionCommit();	
+}
 
-		int nRet = m_dwCount;
-		DWORD dwRet;
-		while(m_dwCount > 0)
-		{
-			dwRet = ::MsgWaitForMultipleObjects(m_dwCount, m_arrThreadHandles, FALSE, INFINITE, QS_ALLINPUT);
 
-			if(dwRet == 0xFFFFFFFF)
-			{
-				::MessageBox(NULL, _T("ERROR: Wait for multiple objects failed!!!"), _T("LjwBrowser"), MB_OK);
-			}
-			else if(dwRet >= WAIT_OBJECT_0 && dwRet <= (WAIT_OBJECT_0 + m_dwCount - 1))
-			{
-				RemoveThread(dwRet - WAIT_OBJECT_0);
-			}
-			else if(dwRet == (WAIT_OBJECT_0 + m_dwCount))
-			{
-				if(::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-				{
-					if(msg.message == WM_USER)
-						AddThread(_T(""), SW_SHOWNORMAL);
-				}
-			}
-			else
-			{
-				::MessageBeep((UINT)-1);
-			}
-		}
 
-		return nRet;
-	}
-};
+
 
 int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lpstrCmdLine, int nCmdShow)
 {
@@ -135,6 +113,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 
 	// this resolves ATL window thunking problem when Microsoft Layer for Unicode (MSLU) is used
 	::DefWindowProc(NULL, 0, 0, 0L);
+	//HookFunc();
 
 	AtlInitCommonControls(ICC_COOL_CLASSES | ICC_BAR_CLASSES);	// add flags to support other controls
 
@@ -143,12 +122,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 
 	AtlAxWinInit();
 
-	int nRet = 0;
-	// BLOCK: Run application
-	{
-		CLjwBrowserThreadManager mgr;
-		nRet = mgr.Run(lpstrCmdLine, nCmdShow);
-	}
+	int nRet = Run(lpstrCmdLine, nCmdShow);
 
 	_Module.Term();
 	::CoUninitialize();
