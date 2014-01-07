@@ -1,3 +1,0 @@
-[submodule "third_party/passthruapp"]
-	path = third_party/passthruapp
-	url = https://github.com/salsita/passthruapp.git
