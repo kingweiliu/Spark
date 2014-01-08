@@ -40,11 +40,10 @@ public:
 			{
 				CComObject<CIEEventHandler>* objEventHandler;
 				CComObject<CIEEventHandler>::CreateInstance(&objEventHandler);
-				objEventHandler->AddRef();
 
 				objEventHandler->setWebbrowser(m_spWebBrowser);
 			}
-		}		
+		}
 		return m_hWnd;
 	}
 
@@ -57,7 +56,6 @@ public:
 
 
 private:
-	CIEEventHandler* m_eventHandler;
 	CComPtr<IWebBrowser2> m_spWebBrowser;
 
 

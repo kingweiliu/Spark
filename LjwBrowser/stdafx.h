@@ -8,7 +8,7 @@
 // Change these values to use different versions
 #define WINVER		0x0500
 #define _WIN32_WINNT	0x0501
-#define _WIN32_IE	0x0501
+#define _WIN32_IE	0x0700    //IE生效的版本，改为IE7，PassthruApp中依赖IE7后的接口
 #define _RICHEDIT_VER	0x0200
 
 #include <atlbase.h>

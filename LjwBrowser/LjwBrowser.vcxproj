@@ -123,29 +123,44 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
+    <ClCompile Include="AyncPlugginableProtocol.cpp" />
     <ClCompile Include="DocUIHandler.cpp" />
+    <ClCompile Include="HookCenter.cpp" />
     <ClCompile Include="IEEventHandler.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="LjwBrowser.cpp" />
     <ClCompile Include="LjwBrowserView.cpp" />
+    <ClCompile Include="ProxySetting.cpp" />
     <ClCompile Include="Setting.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Thread.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\third_party\passthruapp\PassthroughObject.h" />
+    <ClInclude Include="..\third_party\passthruapp\ProtocolCF.h" />
+    <ClInclude Include="..\third_party\passthruapp\ProtocolImpl.h" />
+    <ClInclude Include="..\third_party\passthruapp\SinkPolicy.h" />
     <ClInclude Include="AboutDlg.h" />
+    <ClInclude Include="AyncPlugginableProtocol.h" />
     <ClInclude Include="DocUIHandler.h" />
+    <ClInclude Include="HookCenter.h" />
     <ClInclude Include="IEEventHandler.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="LjwBrowserView.h" />
+    <ClInclude Include="ProxySetting.h" />
     <ClInclude Include="publicDef.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Setting.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Thread.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\third_party\passthruapp\ProtocolCF.inl" />
+    <None Include="..\third_party\passthruapp\ProtocolImpl.inl" />
+    <None Include="..\third_party\passthruapp\SinkPolicy.inl" />
     <None Include="res\LjwBrowser.ico" />
     <None Include="res\toolbar.bmp" />
   </ItemGroup>

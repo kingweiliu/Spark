@@ -14,6 +14,8 @@ HRESULT CDocUIHandler::GetOptionKeyPath(
 	/* [out] */ BSTR *pchKey,
 	/* [in] */ DWORD dw) 
 {
+
+	return E_NOTIMPL;
 	HRESULT hr;
 	WCHAR* szKey = L"ljwnb";
 

@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{be965738-8182-400b-972e-a5f94a869cf8}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{e0c7f331-63c4-45e0-9179-c42f36813002}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{5ae251fe-9de6-4b4b-b8aa-13d3ed756860}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;jpg;jpeg;jpe;manifest</Extensions>
+    </Filter>
+    <Filter Include="Features">
+      <UniqueIdentifier>{1deaa27d-8405-4991-852b-f707e2de7071}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party">
+      <UniqueIdentifier>{118e7a44-e172-4e66-bbe6-6ed087cf52a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\passthruapp">
+      <UniqueIdentifier>{a158a911-7dac-4062-abf2-2ad0babf988d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AboutDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DocUIHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IEEventHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Setting.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LjwBrowserView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LjwBrowser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HookCenter.cpp">
+      <Filter>Features</Filter>
+    </ClCompile>
+    <ClCompile Include="ProxySetting.cpp">
+      <Filter>Features</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AyncPlugginableProtocol.cpp">
+      <Filter>Features</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AboutDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DocUIHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IEEventHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="publicDef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Setting.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LjwBrowserView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HookCenter.h">
+      <Filter>Features</Filter>
+    </ClInclude>
+    <ClInclude Include="ProxySetting.h">
+      <Filter>Features</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\passthruapp\PassthroughObject.h">
+      <Filter>third_party\passthruapp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\passthruapp\ProtocolCF.h">
+      <Filter>third_party\passthruapp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\passthruapp\ProtocolImpl.h">
+      <Filter>third_party\passthruapp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\passthruapp\SinkPolicy.h">
+      <Filter>third_party\passthruapp</Filter>
+    </ClInclude>
+    <ClInclude Include="AyncPlugginableProtocol.h">
+      <Filter>Features</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\toolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\LjwBrowser.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\third_party\passthruapp\ProtocolCF.inl">
+      <Filter>third_party\passthruapp</Filter>
+    </None>
+    <None Include="..\third_party\passthruapp\ProtocolImpl.inl">
+      <Filter>third_party\passthruapp</Filter>
+    </None>
+    <None Include="..\third_party\passthruapp\SinkPolicy.inl">
+      <Filter>third_party\passthruapp</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="LjwBrowser.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

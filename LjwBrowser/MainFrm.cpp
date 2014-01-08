@@ -11,6 +11,8 @@
 #include <wininet.h>
 #include "Setting.h"
 #include "../third_party/Detours3/include/detours.h"
+#include "HookCenter.h"
+#include "ProxySetting.h"
 
 BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
 {
@@ -87,13 +89,9 @@ LRESULT CMainFrame::OnFileExit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
 LRESULT CMainFrame::OnFileNew(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	CLjwBrowserView* pView = new CLjwBrowserView;
-	//TODO: Replace with a URL of your choice
+	
 	pView->Create(m_view, rcDefault, _T("about:blank"), WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_HSCROLL | WS_VSCROLL, 0);
-
 	m_view.AddPage(pView->m_hWnd, _T("Document"), -1, pView);
-
-	// TODO: add code to initialize document
-
 	return 0;
 }
 
@@ -125,196 +123,10 @@ LRESULT CMainFrame::OnAppAbout(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
 	return 0;
 }
 
-void proxy()
-{
-	INTERNET_PER_CONN_OPTION_LIST    List;
-	INTERNET_PER_CONN_OPTION         Option[5];
-	unsigned long                    nSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
-
-	Option[0].dwOption = INTERNET_PER_CONN_AUTOCONFIG_URL;
-	Option[1].dwOption = INTERNET_PER_CONN_AUTODISCOVERY_FLAGS;
-	Option[2].dwOption = INTERNET_PER_CONN_FLAGS;
-	Option[3].dwOption = INTERNET_PER_CONN_PROXY_BYPASS;
-	Option[4].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
-
-	List.dwSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
-	List.pszConnection = NULL;
-	List.dwOptionCount = 5;
-	List.dwOptionError = 0;
-	List.pOptions = Option;
-
-	if(!InternetQueryOption(NULL, INTERNET_OPTION_PER_CONNECTION_OPTION, &List, &nSize))
-		printf("InternetQueryOption failed! (%d)\n", GetLastError());
-	if(Option[0].Value.pszValue != NULL)
-		printf("%s\n", Option[0].Value.pszValue);
-
-	if((Option[2].Value.dwValue & PROXY_TYPE_AUTO_PROXY_URL) == PROXY_TYPE_AUTO_PROXY_URL)
-		printf("PROXY_TYPE_AUTO_PROXY_URL\n");
-
-	if((Option[2].Value.dwValue & PROXY_TYPE_AUTO_DETECT) == PROXY_TYPE_AUTO_DETECT)
-		printf("PROXY_TYPE_AUTO_DETECT\n");
-
-	INTERNET_VERSION_INFO      Version;
-	nSize = sizeof(INTERNET_VERSION_INFO);
-
-	InternetQueryOption(NULL, INTERNET_OPTION_VERSION, &Version, &nSize);
-
-	if(Option[0].Value.pszValue != NULL)
-		GlobalFree(Option[0].Value.pszValue);
-
-	if(Option[3].Value.pszValue != NULL)
-		GlobalFree(Option[3].Value.pszValue);
-
-	if(Option[4].Value.pszValue != NULL)
-		GlobalFree(Option[4].Value.pszValue);
-}
-
-int setProxy() 
-{ 
-	//wchar_t buff[256] = L"http=172.19.1.2:9217"; 
-	//// To include server for FTP, HTTPS, and so on, use the string
-	//// (ftp=http://<ProxyServerName>:80; https=https://<ProxyServerName>:80) 
-	//INTERNET_PER_CONN_OPTION_LIST    List; 
-	//INTERNET_PER_CONN_OPTION         Option[3]; 
-	//unsigned long                    nSize = sizeof(INTERNET_PER_CONN_OPTION_LIST); 
-
-	//Option[0].dwOption = INTERNET_PER_CONN_PROXY_SERVER; 
-	//Option[0].Value.pszValue = buff; 
-
-	//Option[1].dwOption = INTERNET_PER_CONN_FLAGS; 
-	//Option[1].Value.dwValue = PROXY_TYPE_PROXY; 
-	//Option[1].Value.dwValue |= PROXY_TYPE_DIRECT; 
-	//// This option sets all the possible connection types for the client. 
-	//// This case specifies that the proxy can be used or direct connection is possible.
-
-	//Option[2].dwOption = INTERNET_PER_CONN_PROXY_BYPASS; 
-	//Option[2].Value.pszValue = L"<local>"; 
-
-	//List.dwSize = sizeof(INTERNET_PER_CONN_OPTION_LIST); 
-	//List.pszConnection = NULL; 
-	//List.dwOptionCount = 3; 
-	//List.dwOptionError = 0; 
-	//List.pOptions = Option; 
-;
-	//if(!InternetSetOption(NULL, INTERNET_OPTION_PER_CONNECTION_OPTION, &List, nSize)) 
-	//	printf("InternetSetOption failed! (%d)\n", GetLastError()); 
-
-	INTERNET_PROXY_INFO proxyInfo;
-	proxyInfo.dwAccessType = INTERNET_OPEN_TYPE_PROXY;
-	proxyInfo.lpszProxy = (LPCTSTR)"http://172.19.1.2:9217"; 
-	proxyInfo.lpszProxyBypass=NULL;
-
-	//session.SetOption(INTERNET_OPTION_PROXY,(LPVOID)&proxyInfo,sizeof(INTERNET_OPTION_PROXY),0);
-	HRESULT hr =UrlMkSetSessionOption(INTERNET_OPTION_PROXY, (LPVOID)&proxyInfo,sizeof(proxyInfo),0); 
-
-
-	//InternetSetOption(NULL, INTERNET_OPTION_REFRESH, NULL,NULL); 
-	//The connection settings for other instances of Internet Explorer. 
-
-	return 0; 
-
-}
-
-
-int setNoProxy() 
-{ 
-	// To include server for FTP, HTTPS, and so on, use the string
-	// (ftp=http://<ProxyServerName>:80; https=https://<ProxyServerName>:80) 
-	//INTERNET_PER_CONN_OPTION_LIST    List; 
-	//INTERNET_PER_CONN_OPTION         Option[1]; 
-	//unsigned long                    nSize = sizeof(INTERNET_PER_CONN_OPTION_LIST); 
-
-	//Option[0].dwOption = INTERNET_PER_CONN_FLAGS; 
-	//Option[0].Value.dwValue = PROXY_TYPE_DIRECT; 
-	//// This option sets all the possible connection types for the client. 
-	//// This case specifies that the proxy can be used or direct connection is possible.
-
-
-
-	//List.dwSize = sizeof(INTERNET_PER_CONN_OPTION_LIST); 
-	//List.pszConnection = NULL; 
-	//List.dwOptionCount = 1; 
-	//List.dwOptionError = 0; 
-	//List.pOptions = Option; 
-
-	//if(!InternetSetOption(NULL, INTERNET_OPTION_PER_CONNECTION_OPTION, &List, nSize)) 
-	//	printf("InternetSetOption failed! (%d)\n", GetLastError()); 
-
-
-
-	INTERNET_PROXY_INFO proxyInfo;
-	proxyInfo.dwAccessType = INTERNET_OPEN_TYPE_DIRECT;
-	proxyInfo.lpszProxy = NULL;
-	proxyInfo.lpszProxyBypass = NULL;
-
-	//session.SetOption(INTERNET_OPTION_PROXY,(LPVOID)&proxyInfo,sizeof(INTERNET_OPTION_PROXY),0);
-	HRESULT hr =UrlMkSetSessionOption(INTERNET_OPTION_PROXY,&proxyInfo,sizeof(proxyInfo),0); 
-	//InternetSetOption(NULL, INTERNET_OPTION_REFRESH, NULL,NULL); 
-
-	return 0; 
-
-}
-
-
-
-void readProxy(){
-
-	INTERNET_PER_CONN_OPTION_LIST    List;
-	INTERNET_PER_CONN_OPTION         Option[5];
-	unsigned long                    nSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
-
-	Option[0].dwOption = INTERNET_PER_CONN_AUTOCONFIG_URL;
-	Option[1].dwOption = INTERNET_PER_CONN_AUTODISCOVERY_FLAGS;
-	Option[2].dwOption = INTERNET_PER_CONN_FLAGS;
-	Option[3].dwOption = INTERNET_PER_CONN_PROXY_BYPASS;
-	Option[4].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
-
-	List.dwSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
-	List.pszConnection = NULL;
-	List.dwOptionCount = 5;
-	List.dwOptionError = 0;
-	List.pOptions = Option;
-
-	if(!InternetQueryOption(NULL, INTERNET_OPTION_PER_CONNECTION_OPTION, &List, &nSize))
-		printf("InternetQueryOption failed! (%d)\n", GetLastError());
-	if(Option[0].Value.pszValue != NULL)
-		AtlTrace("%s\n", Option[0].Value.pszValue);
-
-
-	if((Option[2].Value.dwValue & PROXY_TYPE_AUTO_PROXY_URL) == PROXY_TYPE_AUTO_PROXY_URL)
-		AtlTrace("PROXY_TYPE_AUTO_PROXY_URL\n");
-
-	if((Option[2].Value.dwValue & PROXY_TYPE_AUTO_DETECT) == PROXY_TYPE_AUTO_DETECT)
-		AtlTrace("PROXY_TYPE_AUTO_DETECT\n");
-
-	INTERNET_VERSION_INFO      Version;
-	nSize = sizeof(INTERNET_VERSION_INFO);
-
-	InternetQueryOption(NULL, INTERNET_OPTION_VERSION, &Version, &nSize);
-
-	if(Option[0].Value.pszValue != NULL)
-		GlobalFree(Option[0].Value.pszValue);
-
-	if(Option[3].Value.pszValue != NULL)
-		GlobalFree(Option[3].Value.pszValue);
-
-	if(Option[4].Value.pszValue != NULL)
-		GlobalFree(Option[4].Value.pszValue);
-
-	INTERNET_PROXY_INFO proxyInfo;
-	proxyInfo.dwAccessType = INTERNET_OPEN_TYPE_PRECONFIG;
-	proxyInfo.lpszProxy = NULL;
-	proxyInfo.lpszProxyBypass = NULL;
-
-	HRESULT hr =UrlMkSetSessionOption(INTERNET_OPTION_PROXY,&proxyInfo,sizeof(proxyInfo),0); 
-
-
-}	
 
 LRESULT CMainFrame::OnProxyNo(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	setNoProxy();
-
+	CProxySetting::setNoProxy();
 	return 0;
 }
 
@@ -322,21 +134,19 @@ LRESULT CMainFrame::OnProxyNo(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl
 LRESULT CMainFrame::OnProxyNo2(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	Setting::m_bProxy = false;
-
 	return 0;
 }
 
 LRESULT CMainFrame::OnProxyIE(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	readProxy();
+	CProxySetting::readProxy();
 	return 0;
 }
 LRESULT CMainFrame::OnProxyMySetting(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	setProxy();
+	CProxySetting::setProxy();
 	return 0;
 }
-
 
 LRESULT CMainFrame::OnWindowClose(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
@@ -354,10 +164,7 @@ LRESULT CMainFrame::OnWindowClose(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWn
 
 LRESULT CMainFrame::OnWindowCloseAll(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-
-
 	m_view.RemoveAllPages();
-
 	return 0;
 }
 
@@ -365,21 +172,11 @@ LRESULT CMainFrame::OnWindowActivate(WORD /*wNotifyCode*/, WORD wID, HWND /*hWnd
 {
 	int nPage = wID - ID_WINDOW_TABFIRST;
 	m_view.SetActivePage(nPage);
-
 	return 0;
 }
 
-HRESULT ( STDMETHODCALLTYPE my_blur )(IHTMLWindow2 * This)
-{
- return S_OK;
-}
-
-typedef HRESULT ( STDMETHODCALLTYPE *pblur )(IHTMLWindow2 * This);
-pblur g_blur = NULL;
-
 LRESULT CMainFrame::OnAddressKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-
 	IUnknown * pUnk = 0;
 	CoCreateInstance(CLSID_HTMLWindow2 , NULL, CLSCTX_INPROC, IID_IHTMLWindow2, (void**)&pUnk );
 	if (wParam == VK_RETURN)
@@ -406,46 +203,24 @@ LRESULT CMainFrame::OnAddressKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 			pView->QueryControl(IID_IWebBrowser2, (void**)&spWeb);
 			if (spWeb)
 			{
-				if (!g_blur)
+				if (CHookCenter::m_bHookBlur)
 				{
-					CComPtr<IDispatch> spDispDoc;
-					spWeb->get_Document(&spDispDoc);
-					CComQIPtr<IHTMLDocument2> spHTMLDoc = spDispDoc;
-					CComPtr<IHTMLWindow2> spWnd;
-					spHTMLDoc->get_parentWindow(&spWnd);
-		//			spWnd->blur();
-
-					DWORD * pVptr =(DWORD*) *(DWORD*)spWnd.p;
-					g_blur = (pblur)(*(pVptr +61));
-
-					::DetourTransactionBegin();
-					::DetourUpdateThread(::GetCurrentThread());
-					::DetourAttach((PVOID*)&g_blur, my_blur);
-					::DetourTransactionCommit();
-
+					CHookCenter::HookBlur(spWeb);
 				}
-
-
 				
 				spWeb->Navigate(CComBSTR(strUrl), NULL, NULL, NULL, NULL);
+				CComObject<CDocUIHandler>* comObjUiHandler;
+				CComObject<CDocUIHandler>::CreateInstance(&comObjUiHandler);
+				comObjUiHandler->AddRef();
+				CComPtr<IDispatch> spDis;
+				spWeb->get_Document(&spDis);
+				CComQIPtr<ICustomDoc> spDoc = spDis;
+				//CComQIPtr<IDocHostUIHandlerDispatch> spHandler = comObjUiHandler;
+				//HRESULT hret = pView->SetExternalUIHandler(spHandler);
+				//CComQIPtr<IDocHostUIHandler> spHandler = comObjUiHandler;
+				//spDoc->SetUIHandler(spHandler);
 			}
-
-
-			CComObject<CDocUIHandler>* comObjUiHandler;
-			CComObject<CDocUIHandler>::CreateInstance(&comObjUiHandler);
-			comObjUiHandler->AddRef();
-			CComPtr<IDispatch> spDis;
-			spWeb->get_Document(&spDis);
-			CComQIPtr<ICustomDoc> spDoc = spDis;
-			//CComQIPtr<IDocHostUIHandlerDispatch> spHandler = comObjUiHandler;
-			//HRESULT hret = pView->SetExternalUIHandler(spHandler);
-			//CComQIPtr<IDocHostUIHandler> spHandler = comObjUiHandler;
-			//spDoc->SetUIHandler(spHandler);
-
-
-
 		}
-
 	}
 	return ::DefWindowProc(m_edtAddress, uMsg, wParam, lParam);
 

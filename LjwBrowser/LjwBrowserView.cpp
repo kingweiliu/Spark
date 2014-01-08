@@ -7,7 +7,7 @@
 
 #include "LjwBrowserView.h"
 
-CLjwBrowserView::CLjwBrowserView(): m_eventHandler(NULL)
+CLjwBrowserView::CLjwBrowserView()
 {
 
 }

@@ -9,4 +9,4 @@ Setting::~Setting(void)
 {
 }
 
-bool Setting::m_bProxy= true;
+bool Setting::m_bProxy= false;
