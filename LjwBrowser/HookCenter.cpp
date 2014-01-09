@@ -136,9 +136,9 @@ HRESULT __stdcall Hook_SHGetFolderPathW(
 	  LPTSTR pszPath){
 	HRESULT hr = g_SHGetFolderPath(hwndOwner, nFolder, hToken, dwFlags, pszPath);
 
-		if (nFolder == CSIDL_COOKIES)
+		if ((nFolder&0x00FF) == CSIDL_COOKIES)
 		{
-			wcscpy(pszPath, L"d:\\cookies");
+			wcscpy(pszPath, L"d:\\cookies\\");
 			//ATLASSERT(FALSE);
 		}
 	return hr;
