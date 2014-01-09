@@ -11,7 +11,7 @@ public:
 	static bool m_bHookBlur;
 	static void HookBlur(IWebBrowser2* pWeb);
 
-	//cookie 通过 重定向隔离
+	//cookie 通过 重定向隔离 , IE8 生效
 	static void HookCookieDir();
 
 
