@@ -46,6 +46,9 @@ public:
 			/* [in] */ ULONG ulStatusCode,
 			/* [in] */ LPCWSTR szStatusText);
 
+    
+        CString m_strUrl;
+
 	};
 
 
@@ -55,6 +58,15 @@ public:
 	class CMyAPP :
 		public PassthroughAPP::CInternetProtocol<MyStartPolicy>
 	{
+    public:
+
+        typedef PassthroughAPP::CInternetProtocol<MyStartPolicy>  BaseClass;
+
+        // IInternetProtocol
+        STDMETHODIMP Read(
+            /* [in, out] */ void *pv,
+            /* [in] */ ULONG cb,
+            /* [out] */ ULONG *pcbRead);
 	};
 
 

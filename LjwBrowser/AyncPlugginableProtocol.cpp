@@ -21,14 +21,14 @@ STDMETHODIMP CAyncPlugginableProtocol::CMyProtocolSink::BeginningTransaction(
 	/* [in] */ LPCWSTR szHeaders,
 	/* [in] */ DWORD dwReserved,
 	/* [out] */ LPWSTR *pszAdditionalHeaders){
-        
+    m_strUrl = szURL;
     OutputDebugString(CString(szURL) + "\n");
-    CString strUrl = szURL;
+    /*CString strUrl = szURL;
     if (-1 != strUrl.Find(L".jpg") || -1 != strUrl.Find(L".gif") || -1!=strUrl.Find(L".png"))
     {
         return E_ABORT;
     }
-
+*/
     //Ôö¼Óheader; 
     WCHAR* szNewHeader = (LPWSTR)CoTaskMemAlloc(1024 * sizeof(WCHAR));
     memset(szNewHeader, 0, sizeof(WCHAR)*1024);
@@ -68,4 +68,18 @@ void CAyncPlugginableProtocol::RegisterPlugginProtocol(){
 
 	MetaFactory::CreateInstance(CLSID_HttpSProtocol, &m_CFHTTPS);
 	pInternetSession->RegisterNameSpace(m_CFHTTPS, CLSID_NULL, L"https", 0, 0, 0);
+}
+
+
+// IInternetProtocol
+STDMETHODIMP CAyncPlugginableProtocol::CMyAPP::Read(
+    /* [in, out] */ void *pv,
+    /* [in] */ ULONG cb,
+    /* [out] */ ULONG *pcbRead)
+{
+    HRESULT hr = BaseClass::Read(pv, cb, pcbRead);
+    CMyProtocolSink* pSink = BaseClass::GetSink();
+   // OutputDebugString(pSink->m_strUrl+"\n");
+    ATLASSERT(TRUE);
+    return hr;
 }
