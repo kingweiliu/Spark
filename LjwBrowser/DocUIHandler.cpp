@@ -50,7 +50,16 @@ HRESULT STDMETHODCALLTYPE CDocUIHandler::ShowContextMenu(
 
 HRESULT  CDocUIHandler::GetExternal( 
     /* [out] */ IDispatch **ppDispatch) {
-    *ppDispatch = m_dispExternal;
+    if(ppDispatch)
+        *ppDispatch = NULL;
+    else
+        return E_INVALIDARG;
+    
+    //*ppDispatch = m_dispExternal;
+    /******************************/
+    //******  very important
+    // we must addref before return, Otherwise a crash ocurred.
+    m_dispExternal.CopyTo(ppDispatch);
     return S_OK;
 }
 
