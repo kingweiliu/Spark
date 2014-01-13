@@ -77,6 +77,7 @@ STDMETHODIMP CAyncPlugginableProtocol::CMyAPP::Read(
     /* [in] */ ULONG cb,
     /* [out] */ ULONG *pcbRead)
 {
+    //we can save
     HRESULT hr = BaseClass::Read(pv, cb, pcbRead);
     CMyProtocolSink* pSink = BaseClass::GetSink();
    // OutputDebugString(pSink->m_strUrl+"\n");

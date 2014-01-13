@@ -124,7 +124,9 @@
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="AyncPlugginableProtocol.cpp" />
+    <ClCompile Include="CoreFeature.cpp" />
     <ClCompile Include="DocUIHandler.cpp" />
+    <ClCompile Include="ExternalDisp.cpp" />
     <ClCompile Include="HookCenter.cpp" />
     <ClCompile Include="IEEventHandler.cpp" />
     <ClCompile Include="MainFrm.cpp" />
@@ -145,7 +147,9 @@
     <ClInclude Include="..\third_party\passthruapp\SinkPolicy.h" />
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="AyncPlugginableProtocol.h" />
+    <ClInclude Include="CoreFeature.h" />
     <ClInclude Include="DocUIHandler.h" />
+    <ClInclude Include="ExternalDisp.h" />
     <ClInclude Include="HookCenter.h" />
     <ClInclude Include="IEEventHandler.h" />
     <ClInclude Include="MainFrm.h" />

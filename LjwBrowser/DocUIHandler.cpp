@@ -34,14 +34,36 @@ HRESULT CDocUIHandler::GetOptionKeyPath(
 		hr = E_INVALIDARG;
 
 	return hr;
+    
+}
 
+HRESULT STDMETHODCALLTYPE CDocUIHandler::ShowContextMenu( 
+    /* [in] */ DWORD dwID,
+    /* [in] */ DWORD x,
+    /* [in] */ DWORD y,
+    /* [in] */ IUnknown *pcmdtReserved,
+    /* [in] */ IDispatch *pdispReserved,
+    /* [retval][out] */ HRESULT *dwRetVal){
+        return E_NOTIMPL;
 }
 
 
-HRESULT  CDocUIHandler::GetOverrideKeyPath( 
-	/* [annotation][out] */ 
-	__deref_out  LPOLESTR *pchKey,
-	/* [in] */ DWORD dw) 
-{
-	return E_NOTIMPL;
+HRESULT  CDocUIHandler::GetExternal( 
+    /* [out] */ IDispatch **ppDispatch) {
+    *ppDispatch = m_dispExternal;
+    return S_OK;
 }
+
+void CDocUIHandler::SetExternalDisp(IDispatch* disp){
+    m_dispExternal = disp;
+}
+
+
+
+//HRESULT  CDocUIHandler::GetOverrideKeyPath( 
+//	/* [annotation][out] */ 
+//	__deref_out  LPOLESTR *pchKey,
+//	/* [in] */ DWORD dw) 
+//{
+//	return E_NOTIMPL;
+//}

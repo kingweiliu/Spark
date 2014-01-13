@@ -24,6 +24,7 @@ BOOL CLjwBrowserView::PreTranslateMessage(MSG* pMsg)
 
 LRESULT CLjwBrowserView::onCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 {
+    
 
 	bHandled = FALSE;
 	return 0;

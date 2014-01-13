@@ -209,12 +209,12 @@ LRESULT CMainFrame::OnAddressKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 				}
 				
 				spWeb->Navigate(CComBSTR(strUrl), NULL, NULL, NULL, NULL);
-				CComObject<CDocUIHandler>* comObjUiHandler;
-				CComObject<CDocUIHandler>::CreateInstance(&comObjUiHandler);
-				comObjUiHandler->AddRef();
-				CComPtr<IDispatch> spDis;
-				spWeb->get_Document(&spDis);
-				CComQIPtr<ICustomDoc> spDoc = spDis;
+				//CComObject<CDocUIHandler>* comObjUiHandler;
+				//CComObject<CDocUIHandler>::CreateInstance(&comObjUiHandler);
+				//comObjUiHandler->AddRef();
+				//CComPtr<IDispatch> spDis;
+				//spWeb->get_Document(&spDis);
+				//CComQIPtr<ICustomDoc> spDoc = spDis;
 				//CComQIPtr<IDocHostUIHandlerDispatch> spHandler = comObjUiHandler;
 				//HRESULT hret = pView->SetExternalUIHandler(spHandler);
 				//CComQIPtr<IDocHostUIHandler> spHandler = comObjUiHandler;

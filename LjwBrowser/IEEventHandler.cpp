@@ -40,13 +40,13 @@ HRESULT CIEEventHandler::NavigateComplete2(          IDispatch *pDisp,
 		CComQIPtr<ICustomDoc> spDoc = spDisp;
 		if (spDoc)
 		{
+
 			CComObject<CDocUIHandler>* objUIHandler;
 			CComObject<CDocUIHandler>::CreateInstance(&objUIHandler);
 //			objUIHandler->AddRef(); 此处不需要加一 ?
-			CComQIPtr<IDocHostUIHandler> spHandler = objUIHandler;
+			//CComQIPtr<IDocHostUIHandler> spHandler = objUIHandler;
 
-			HRESULT hr = spDoc->SetUIHandler(spHandler);
-			return hr;
+			//return spDoc->SetUIHandler(spHandler);
 		}
 	}
 
