@@ -62,7 +62,7 @@ STDMETHODIMP CAyncPlugginableProtocol::CMyProtocolSink::OnResponse(
 STDMETHODIMP CAyncPlugginableProtocol::CMyProtocolSink::ReportProgress(
 	/* [in] */ ULONG ulStatusCode,
 	/* [in] */ LPCWSTR szStatusText){
-    return S_OK;
+    return BaseClass::ReportProgress(ulStatusCode, szStatusText);
 }
 
 
