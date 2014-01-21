@@ -3,6 +3,10 @@
 #include <UrlMon.h>
 #include "../third_party/passthruapp/ProtocolImpl.h"
 
+
+//TODO: 完善 IHttpNegotiate借口，
+
+
 class CAyncPlugginableProtocol
 {
 public:
@@ -15,7 +19,7 @@ public:
 
 	class CMyProtocolSink:
 		public PassthroughAPP::CInternetProtocolSinkWithSP<CMyProtocolSink>,
-		public IHttpNegotiate
+		public IHttpNegotiate //这个接口会导致海淀驾校上不去
 	{
 	public:
 		typedef public PassthroughAPP::CInternetProtocolSinkWithSP<CMyProtocolSink> BaseClass;

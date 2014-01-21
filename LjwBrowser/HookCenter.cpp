@@ -67,8 +67,7 @@ HINTERNET hook_InternetConnect(
 	return g_originConnect(hInternet, lpszServerName, nServerPort, lpszUsername, lpszPassword, dwService, dwFlags, dwContext);
 }
 
-void CHookCenter::StartHook(){
-	
+void CHookCenter::StartHook(){	
 	LoadLibrary(L"Wininet.dll");
 	g_originConnect = (pInternetConnect)DetourFindFunction("Wininet.dll", "InternetConnectW");
 	DetourTransactionBegin();

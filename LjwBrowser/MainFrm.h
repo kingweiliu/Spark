@@ -8,11 +8,13 @@
 
 #include "publicDef.h"
 #include "resource.h"
+#include "IUIDelegate.h"
 
 class CMainFrame : 
 	public CFrameWindowImpl<CMainFrame>, 
 	public CUpdateUI<CMainFrame>,
-	public CMessageFilter, public CIdleHandler
+	public CMessageFilter, public CIdleHandler,
+    public IUiDelegate
 {
 public:
 	DECLARE_FRAME_WND_CLASS(NULL, IDR_MAINFRAME)
@@ -79,6 +81,10 @@ public:
 	//address msg handler
 	LRESULT OnAddressKeyDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnAddressShow(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+
+
+    void virtual NewWindow(IDispatch **pDisp, VARIANT_BOOL *Cancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl);
+    void virtual TitleChange(BSTR Text);
 
 private:
 	CContainedWindowT<CEdit> m_edtAddress;

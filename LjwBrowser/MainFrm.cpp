@@ -41,12 +41,15 @@ LRESULT CMainFrame::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/
 
 	HWND hWndToolBar = CreateSimpleToolBarCtrl(m_hWnd, IDR_MAINFRAME, FALSE, ATL_SIMPLE_TOOLBAR_PANE_STYLE);
 
-	m_edtAddress.Create(this, MAINFRAME_ADDRESS_MSGID, m_hWnd, rcDefault, NULL, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, WS_EX_CLIENTEDGE);
+    RECT rect = {0, 0, 30, 30};
+
+
+	m_edtAddress.Create(this, MAINFRAME_ADDRESS_MSGID, m_hWnd, rect, NULL, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, WS_EX_CLIENTEDGE);
 
 	CreateSimpleReBar(ATL_SIMPLE_REBAR_NOBORDER_STYLE);
 	AddSimpleReBarBand(hWndCmdBar);
 	AddSimpleReBarBand(hWndToolBar, NULL, TRUE);
-	AddSimpleReBarBand(m_edtAddress);
+	AddSimpleReBarBand(m_edtAddress, NULL, TRUE);
 
 	CreateSimpleStatusBar();
 
@@ -90,7 +93,8 @@ LRESULT CMainFrame::OnFileNew(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl
 {
 	CLjwBrowserView* pView = new CLjwBrowserView;
 	
-	pView->Create(m_view, rcDefault, _T("about:blank"), WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_HSCROLL | WS_VSCROLL, 0);
+	pView->Create(m_view, rcDefault, _T("http://www.baidu.com"), WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_HSCROLL | WS_VSCROLL, 0);
+    pView->Init(this);
 	m_view.AddPage(pView->m_hWnd, _T("Document"), -1, pView);
 	return 0;
 }
@@ -235,4 +239,20 @@ LRESULT CMainFrame::OnAddressShow(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, B
 
 	return 0;
 
+}
+
+
+void CMainFrame::NewWindow(IDispatch **pDisp, VARIANT_BOOL *Cancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl)
+{
+    CLjwBrowserView* pView = new CLjwBrowserView;
+    pView->Create(m_view, rcDefault, _T("about:blank"), WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_HSCROLL | WS_VSCROLL, 0);
+    pView->Init(this);
+    m_view.AddPage(pView->m_hWnd, _T("Document"), -1, pView);
+    pView->QueryControl(IID_IDispatch, (void**)pDisp);    
+    return;
+}
+void CMainFrame::TitleChange(BSTR Text)
+{
+    int idx = m_view.GetActivePage();
+    m_view.SetPageTitle(idx, Text);
 }

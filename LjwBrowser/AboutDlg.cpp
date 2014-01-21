@@ -10,6 +10,9 @@
 LRESULT CAboutDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	CenterWindow(GetParent());
+
+    ::CreateWindowEx(WS_EX_CLIENTEDGE, WC_TABCONTROL, NULL, WS_CHILD | WS_VISIBLE, 0, 0, 200, 200, m_hWnd, NULL, _Module.get_m_hInst(), NULL);
+    
 	return TRUE;
 }
 

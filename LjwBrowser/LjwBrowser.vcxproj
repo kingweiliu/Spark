@@ -125,6 +125,7 @@
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="AyncPlugginableProtocol.cpp" />
     <ClCompile Include="CoreFeature.cpp" />
+    <ClCompile Include="CusTabCtrl.cpp" />
     <ClCompile Include="DocUIHandler.cpp" />
     <ClCompile Include="ExternalDisp.cpp" />
     <ClCompile Include="HookCenter.cpp" />
@@ -148,10 +149,13 @@
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="AyncPlugginableProtocol.h" />
     <ClInclude Include="CoreFeature.h" />
+    <ClInclude Include="CusTabCtrl.h" />
     <ClInclude Include="DocUIHandler.h" />
     <ClInclude Include="ExternalDisp.h" />
     <ClInclude Include="HookCenter.h" />
     <ClInclude Include="IEEventHandler.h" />
+    <ClInclude Include="IMainFrame.h" />
+    <ClInclude Include="IUIDelegate.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="LjwBrowserView.h" />
     <ClInclude Include="ProxySetting.h" />

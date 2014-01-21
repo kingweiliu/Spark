@@ -9,6 +9,9 @@
 #include "DownloadMgr.h"
 #include "CoreFeature.h"
 
+
+class CMainFrame;
+
 class CLjwBrowserView : 
     public CWindowImpl<CLjwBrowserView, CAxWindow>
 {
@@ -45,48 +48,7 @@ public:
 		_U_MENUorID MenuOrID = 0U, LPVOID lpCreateParam = NULL)
 	{
 		CWindowImpl<CLjwBrowserView, CAxWindow>::Create(hWndParent, rect, szWindowName, dwStyle, dwExStyle, MenuOrID, lpCreateParam);
-		if (m_hWnd)
-		{
-            this->QueryControl(IID_IWebBrowser2, (void**)&m_spWebBrowser);
-			if (m_spWebBrowser)
-			{
-                CComObject<CIEEventHandler>* objEventHandler;
-                CComObject<CIEEventHandler>::CreateInstance(&objEventHandler);                                
-                objEventHandler->setWebbrowser(m_spWebBrowser);
-
-                CComObject<CExternalDisp> * objExtDisp;
-                CComObject<CExternalDisp>::CreateInstance(&objExtDisp);      
-                CComQIPtr<IDispatch> spDis = objExtDisp;
-                HRESULT hr  = this->SetExternalDispatch(spDis);
-    
-                // TODO: these codes below will cause crash in case of navigating to sina.com
-                CComObject<CDocUIHandler> * objUIHandler;
-                CComObject<CDocUIHandler>::CreateInstance(&objUIHandler);
-                objUIHandler->SetExternalDisp(spDis);
-                CComQIPtr<IDocHostUIHandlerDispatch> spUiDisp = objUIHandler;                
-                this->SetExternalUIHandler(spUiDisp);
-
-
-                CComPtr<IAxWinHostWindow> spAxHostWnd;
-                this->QueryHost(IID_IAxWinHostWindow, (void**)&spAxHostWnd);
-                CComQIPtr<IObjectWithSite> spObjWithSite = spAxHostWnd;
-                if(spObjWithSite){
-                    CComObject<CCoreFeature>* spCoreFeature ;
-                    CComObject<CCoreFeature>::CreateInstance(&spCoreFeature);
-                    spCoreFeature->QueryInterface(&m_spDownloadMgr);
-                    CComPtr<IUnknown> spUnk = m_spDownloadMgr;
-                    spObjWithSite->SetSite(spUnk);
-
-                    CComPtr<IDownloadManager> spDownload;
-                    CComQIPtr<IServiceProvider> spService = spAxHostWnd;
-                    spService->QueryService(SID_SDownloadManager, IID_IDownloadManager, 
-                        (void**)&spDownload);
-                }
-
-
-                
-			}
-		}
+		
 		return m_hWnd;
 	}
 
@@ -98,8 +60,13 @@ public:
 //	LRESULT NotifyHandler(int /*idCtrl*/, LPNMHDR /*pnmh*/, BOOL& /*bHandled*/)
 
 
+
+    void Init(CMainFrame* pFrame);
+
 private:
 	CComPtr<IWebBrowser2> m_spWebBrowser;
     CComPtr<IDownloadManager> m_spDownloadMgr;
+
+    CMainFrame * m_pMainFrame;
 
 };

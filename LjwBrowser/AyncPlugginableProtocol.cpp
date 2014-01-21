@@ -21,6 +21,16 @@ STDMETHODIMP CAyncPlugginableProtocol::CMyProtocolSink::BeginningTransaction(
 	/* [in] */ LPCWSTR szHeaders,
 	/* [in] */ DWORD dwReserved,
 	/* [out] */ LPWSTR *pszAdditionalHeaders){
+    
+    //获取默认的实现， 回调默认实现
+    CComPtr<IHttpNegotiate> spHttpNegotiate;
+    QueryServiceFromClient(&spHttpNegotiate);
+    if (spHttpNegotiate)
+    {
+        return spHttpNegotiate->BeginningTransaction(szURL, szHeaders, dwReserved, pszAdditionalHeaders);
+    }
+    
+
     m_strUrl = szURL;
     OutputDebugString(CString(szURL) + "\n");
     /*CString strUrl = szURL;
@@ -41,19 +51,22 @@ STDMETHODIMP CAyncPlugginableProtocol::CMyProtocolSink::OnResponse(
 	/* [in] */ LPCWSTR szResponseHeaders,
 	/* [in] */ LPCWSTR szRequestHeaders,
 	/* [out] */ LPWSTR *pszAdditionalRequestHeaders){
-		return S_OK;
-        
+    CComPtr<IHttpNegotiate> spHttpNegotiate;
+    QueryServiceFromClient(&spHttpNegotiate);
+    if (spHttpNegotiate)
+    {
+        return spHttpNegotiate->OnResponse(dwResponseCode, szResponseHeaders, szRequestHeaders, pszAdditionalRequestHeaders);
+    }
 }
 
 STDMETHODIMP CAyncPlugginableProtocol::CMyProtocolSink::ReportProgress(
 	/* [in] */ ULONG ulStatusCode,
 	/* [in] */ LPCWSTR szStatusText){
-		return S_OK;
+    return S_OK;
 }
 
 
 void CAyncPlugginableProtocol::RegisterPlugginProtocol(){
-
 	typedef PassthroughAPP::CMetaFactory<PassthroughAPP::CComClassFactoryProtocol,
 		CMyAPP> MetaFactory;
 	
@@ -77,6 +90,7 @@ STDMETHODIMP CAyncPlugginableProtocol::CMyAPP::Read(
     /* [in] */ ULONG cb,
     /* [out] */ ULONG *pcbRead)
 {
+    return BaseClass::Read(pv, cb, pcbRead);
     //we can save
     HRESULT hr = BaseClass::Read(pv, cb, pcbRead);
     CMyProtocolSink* pSink = BaseClass::GetSink();

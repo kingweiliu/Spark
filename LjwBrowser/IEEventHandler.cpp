@@ -3,7 +3,8 @@
 #include "DocUIHandler.h"
 #include "HookCenter.h"
 
-CIEEventHandler::CIEEventHandler()
+
+CIEEventHandler::CIEEventHandler():m_uiDelegate(NULL)
 {
 }
 
@@ -14,6 +15,11 @@ CIEEventHandler::~CIEEventHandler(void)
 void CIEEventHandler::setWebbrowser(IWebBrowser2* pWeb)
 {
 	DispEventAdvise(pWeb, &DIID_DWebBrowserEvents2);
+}
+
+void CIEEventHandler::setUiDelegate(IUiDelegate* uidelegate)
+{
+    m_uiDelegate = uidelegate;
 }
 
 HRESULT CIEEventHandler::NavigateComplete2(          IDispatch *pDisp,
@@ -51,4 +57,14 @@ HRESULT CIEEventHandler::NavigateComplete2(          IDispatch *pDisp,
 	}
 
 	return S_OK;
+}
+
+void CIEEventHandler::OnNewWindow3(IDispatch **ppDisp, VARIANT_BOOL *Cancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl){
+    if (m_uiDelegate)
+        m_uiDelegate->NewWindow(ppDisp, Cancel, dwFlags, bstrUrlContext, bstrUrl);
+}
+
+void CIEEventHandler::TitleChange(BSTR Text){
+    if(m_uiDelegate)
+        m_uiDelegate->TitleChange(Text);
 }
