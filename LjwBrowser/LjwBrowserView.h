@@ -12,14 +12,17 @@
 
 class CMainFrame;
 
-class CLjwBrowserView : 
-    public CWindowImpl<CLjwBrowserView, CAxWindow>
+class CCore : 
+    public CWindowImpl<CCore, CAxWindow>
 {
 public:
 
-	CLjwBrowserView();
 
-	~CLjwBrowserView()
+    static CCore* CreateBrowserView(HWND hWndParent, CMainFrame* pFrame);
+
+	
+
+	~CCore()
 	{
 		int i=0;
 		i+=1;
@@ -30,8 +33,8 @@ public:
 
 	BOOL PreTranslateMessage(MSG* pMsg);
 
-	BEGIN_MSG_MAP(CLjwBrowserView)
-		MESSAGE_HANDLER(WM_CREATE, onCreate)
+	BEGIN_MSG_MAP(CCore)
+		//MESSAGE_HANDLER(WM_CREATE, onCreate)
 	END_MSG_MAP()
 
    /* BEGIN_COM_MAP(CLjwBrowserView)
@@ -43,14 +46,15 @@ public:
         SERVICE_ENTRY(IDownloadManager)
     END_SERVICE_MAP()*/
 
-	HWND Create(HWND hWndParent, _U_RECT rect = NULL, LPCTSTR szWindowName = NULL,
-		DWORD dwStyle = 0, DWORD dwExStyle = 0,
-		_U_MENUorID MenuOrID = 0U, LPVOID lpCreateParam = NULL)
-	{
-		CWindowImpl<CLjwBrowserView, CAxWindow>::Create(hWndParent, rect, szWindowName, dwStyle, dwExStyle, MenuOrID, lpCreateParam);
-		
-		return m_hWnd;
-	}
+	//HWND Create(HWND hWndParent, _U_RECT rect = NULL, LPCTSTR szWindowName = NULL,
+	//	DWORD dwStyle = 0, DWORD dwExStyle = 0,
+	//	_U_MENUorID MenuOrID = 0U, LPVOID lpCreateParam = NULL)
+	//{
+	//	CWindowImpl<CLjwBrowserView, CAxWindow>::Create(hWndParent, rect, szWindowName, dwStyle, dwExStyle, MenuOrID, lpCreateParam);
+ //      
+	//	
+	//	return m_hWnd;
+	//}
 
 	LRESULT onCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 
@@ -63,10 +67,14 @@ public:
 
     void Init(CMainFrame* pFrame);
 
+
 private:
+    CCore();
+
 	CComPtr<IWebBrowser2> m_spWebBrowser;
     CComPtr<IDownloadManager> m_spDownloadMgr;
 
     CMainFrame * m_pMainFrame;
+    DWORD m_dwThreadID;
 
 };

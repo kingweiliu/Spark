@@ -125,6 +125,7 @@
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="AyncPlugginableProtocol.cpp" />
     <ClCompile Include="CoreFeature.cpp" />
+    <ClCompile Include="CoreMgr.cpp" />
     <ClCompile Include="CusTabCtrl.cpp" />
     <ClCompile Include="DocUIHandler.cpp" />
     <ClCompile Include="ExternalDisp.cpp" />
@@ -135,11 +136,14 @@
     <ClCompile Include="LjwBrowserView.cpp" />
     <ClCompile Include="ProxySetting.cpp" />
     <ClCompile Include="Setting.cpp" />
+    <ClCompile Include="Singleton.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Task.cpp" />
     <ClCompile Include="Thread.cpp" />
+    <ClCompile Include="ThreadMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\third_party\passthruapp\PassthroughObject.h" />
@@ -149,6 +153,7 @@
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="AyncPlugginableProtocol.h" />
     <ClInclude Include="CoreFeature.h" />
+    <ClInclude Include="CoreMgr.h" />
     <ClInclude Include="CusTabCtrl.h" />
     <ClInclude Include="DocUIHandler.h" />
     <ClInclude Include="ExternalDisp.h" />
@@ -162,8 +167,11 @@
     <ClInclude Include="publicDef.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Setting.h" />
+    <ClInclude Include="Singleton.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Task.h" />
     <ClInclude Include="Thread.h" />
+    <ClInclude Include="ThreadMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\third_party\passthruapp\ProtocolCF.inl" />

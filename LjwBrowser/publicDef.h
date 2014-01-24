@@ -1,2 +1,4 @@
 
 #define MAINFRAME_ADDRESS_MSGID 1
+
+#define MSG_WM_NEWTASK  (WM_USER+1)

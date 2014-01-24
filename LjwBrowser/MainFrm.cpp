@@ -13,6 +13,9 @@
 #include "../third_party/Detours3/include/detours.h"
 #include "HookCenter.h"
 #include "ProxySetting.h"
+#include "ThreadMgr.h"
+#include "Singleton.h"
+#include "Task.h"
 
 BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
 {
@@ -91,13 +94,25 @@ LRESULT CMainFrame::OnFileExit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
 
 LRESULT CMainFrame::OnFileNew(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	CLjwBrowserView* pView = new CLjwBrowserView;
-	
-	pView->Create(m_view, rcDefault, _T("http://www.baidu.com"), WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_HSCROLL | WS_VSCROLL, 0);
-    pView->Init(this);
-	m_view.AddPage(pView->m_hWnd, _T("Document"), -1, pView);
-	return 0;
+	//CLjwBrowserView* pView = new CLjwBrowserView;
+	//
+	//pView->Create(m_view, rcDefault, NULL /*_T("http://www.baidu.com")*/, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_HSCROLL | WS_VSCROLL, 0);
+ //   pView->Init(this);
+
+
+    DWORD dwThreadID = CSingleton<CThreadMgr>::Instance()->CreateThread();
+    //ITask * pTask = new CTask0(this, CMainFrame::FileNewInternal);
+    FileNewInternal();
+    //CSingleton<CThreadMgr>::Instance()->RunTask(dwThreadID, new CTask0<CMainFrame>(this, &CMainFrame::FileNewInternal));
+    return 0;
 }
+
+void CMainFrame::FileNewInternal(){
+    CCore* pView  = CCore::CreateBrowserView(NULL, this);    
+    CSingleton<CThreadMgr>::Instance()->RunTask(0, new CTask0<CMainFrame>(this, &CMainFrame::FileNewInternal));
+    DockCore(pView);
+}
+
 
 LRESULT CMainFrame::OnViewToolBar(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
@@ -156,7 +171,7 @@ LRESULT CMainFrame::OnWindowClose(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWn
 {
 	int nActivePage = m_view.GetActivePage();
 	if(nActivePage != -1){
-		CLjwBrowserView* pView  = (CLjwBrowserView* ) m_view.GetPageData(nActivePage);
+		CCore* pView  = (CCore* ) m_view.GetPageData(nActivePage);
 		m_view.RemovePage(nActivePage);
 		delete pView;
 	}
@@ -188,18 +203,16 @@ LRESULT CMainFrame::OnAddressKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 		CString strUrl;
 		m_edtAddress.GetWindowText(strUrl);
 		int nPageIndex = m_view.GetActivePage();
-		CLjwBrowserView * pView = NULL;
+		CCore * pView = NULL;
 
 		if (nPageIndex == -1)
 		{
-			CLjwBrowserView* pView = new CLjwBrowserView;
-			//TODO: Replace with a URL of your choice
-			pView->Create(m_view, rcDefault, _T("http://www.microsoft.com"), WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_HSCROLL | WS_VSCROLL, 0);
-			m_view.AddPage(pView->m_hWnd, _T("Document"), -1, pView);
+            CCore* pView  = CCore::CreateBrowserView(m_view, this);
+			m_view.AddPage(pView->m_hWnd, _T(""), -1, pView);
 		}		
 		else
 		{
-			pView = (CLjwBrowserView*) m_view.GetPageData(nPageIndex);
+			pView = (CCore*) m_view.GetPageData(nPageIndex);
 		}
 		if (pView)
 		{
@@ -244,15 +257,24 @@ LRESULT CMainFrame::OnAddressShow(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, B
 
 void CMainFrame::NewWindow(IDispatch **pDisp, VARIANT_BOOL *Cancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl)
 {
-    CLjwBrowserView* pView = new CLjwBrowserView;
-    pView->Create(m_view, rcDefault, _T("about:blank"), WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_HSCROLL | WS_VSCROLL, 0);
-    pView->Init(this);
+    CCore* pView = CCore::CreateBrowserView(m_view, this);
     m_view.AddPage(pView->m_hWnd, _T("Document"), -1, pView);
-    pView->QueryControl(IID_IDispatch, (void**)pDisp);    
+    CComPtr<IWebBrowser2> spWeb;
+    pView->QueryControl(&spWeb);
+    spWeb->QueryInterface(pDisp);
     return;
 }
 void CMainFrame::TitleChange(BSTR Text)
 {
     int idx = m_view.GetActivePage();
     m_view.SetPageTitle(idx, Text);
+}
+
+void CMainFrame::DockCore(CCore* pCore){
+    DWORD dwStyle = ::GetWindowLong(pCore->m_hWnd, GWL_STYLE);
+    dwStyle &= ~WS_POPUP;
+    dwStyle |= WS_CHILD;
+    pCore->SetParent(m_view);
+    ::SetWindowLong(pCore->m_hWnd, GWL_STYLE, dwStyle);
+    m_view.AddPage(pCore->m_hWnd, _T("Document"), -1, pCore);
 }

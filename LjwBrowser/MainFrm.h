@@ -10,6 +10,8 @@
 #include "resource.h"
 #include "IUIDelegate.h"
 
+class CCore;
+
 class CMainFrame : 
 	public CFrameWindowImpl<CMainFrame>, 
 	public CUpdateUI<CMainFrame>,
@@ -86,6 +88,9 @@ public:
     void virtual NewWindow(IDispatch **pDisp, VARIANT_BOOL *Cancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl);
     void virtual TitleChange(BSTR Text);
 
+    void DockCore(CCore* pCore);
+private:
+    void FileNewInternal();
 private:
 	CContainedWindowT<CEdit> m_edtAddress;
 };
